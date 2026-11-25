@@ -1,0 +1,12 @@
+package com.pawsshop.service;
+import com.pawsshop.model.*; import com.pawsshop.repo.*; import org.springframework.boot.CommandLineRunner; import org.springframework.context.annotation.*; import org.springframework.security.crypto.password.PasswordEncoder; import java.math.BigDecimal;
+@Configuration public class SeedData {
+ @Bean @org.springframework.core.annotation.Order(1) CommandLineRunner seed(ShopUserRepository u,CustomerRepository c,PetRepository pets,ProductRepository p,AppointmentRepository a,PasswordEncoder encoder){return args->{
+ boolean firstRun=u.count()==0; if(firstRun){Admin admin=new Admin(); admin.setUsername("admin");admin.setFullName("Shop Admin");admin.setPasswordHash(encoder.encode("admin123"));u.save(admin); Staff staff=new Staff();staff.setUsername("staff");staff.setFullName("Shop Staff");staff.setPasswordHash(encoder.encode("staff123"));u.save(staff);}
+ if(firstRun && c.count()==0){customer(c,"Amelia Perera","amelia@example.com","077 123 4567");customer(c,"Nimal Silva","nimal@example.com","071 234 5678");customer(c,"Sarah Fernando","sarah@example.com","077 345 6789");}
+ if(firstRun && pets.count()==0){Dog d=new Dog();d.setName("Biscuit");d.setBreed("Golden Retriever");d.setAge(3);d.setOwnerName("Amelia Perera");pets.save(d); Cat cat=new Cat();cat.setName("Milo");cat.setBreed("Domestic Shorthair");cat.setAge(2);cat.setOwnerName("Nimal Silva");pets.save(cat); Dog d2=new Dog();d2.setName("Luna");d2.setBreed("Beagle");d2.setAge(4);d2.setOwnerName("Sarah Fernando");pets.save(d2);}
+ if(firstRun && p.count()==0){product(p,new Food(),"Everyday Goodness","Wholesome dry food",4200,24);product(p,new Food(),"Happy Bites","Crunchy training treats",1250,8);product(p,new Accessory(),"The Everyday Leash","A walk-time essential",2850,15);product(p,new Accessory(),"Cozy Cloud Bed","For their favorite naps",6500,4);}
+ if(firstRun && a.count()==0){Appointment x=new Appointment();x.setPetName("Biscuit");x.setCustomerName("Amelia Perera");x.setService("Grooming");x.setDate(java.time.LocalDate.now().plusDays(1).toString());x.setTime("10:00");x.setStatus("BOOKED");a.save(x);}
+ };}
+ private void customer(CustomerRepository r,String n,String e,String ph){Customer x=new Customer();x.setName(n);x.setEmail(e);x.setPhone(ph);r.save(x);} private void product(ProductRepository r,Product x,String n,String d,int price,int stock){x.setName(n);x.setDescription(d);x.setPrice(BigDecimal.valueOf(price));x.setStock(stock);r.save(x);}
+}

@@ -1,0 +1,1 @@
+package com.pawsshop.model; import java.math.BigDecimal; public class CardPayment extends Payment { @Override public String describe(BigDecimal amount){return "Card payment (record only): " + amount;} }
